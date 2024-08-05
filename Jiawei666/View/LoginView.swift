@@ -7,9 +7,16 @@
 
 import UIKit
 
+protocol Navigator: NSObjectProtocol {
+    func pushNavigation(VC: UIViewController)
+    func popNavigation(VC: UIViewController)
+}
+
 class LoginView: UIView, UITextFieldDelegate {
     
     let viewModel: LoginViewModel
+    
+    weak var delegate: Navigator?
     
     lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -129,33 +136,18 @@ extension LoginView {
         let username = usernameTextField.text ?? ""
         let password = passwordTextField.text ?? ""
         
-        viewModel.login(username: username, password: password) { success in
-            if success {
-                print("Login successful")
-            } else {
-                print("Login failed")
-            }
-        }
-        let scale: CGFloat = 0.95
-        sender.transform = CGAffineTransform(scaleX: scale, y: scale)
-        UIView.animate(withDuration: 0.1, animations: {
-            sender.transform = CGAffineTransform(scaleX: 1 / scale, y: 1 / scale)
-        }) { _ in
-            UIView.animate(withDuration: 0.1) {
-                sender.transform = .identity
-            }
+        if viewModel.login(username: username, password: password) {
+            debugPrint("Login successful, username: " + username + " password: " + password)
+            let AiNoiseReductionVC = AINoiseReductionViewController()
+            delegate?.pushNavigation(VC: AiNoiseReductionVC)
+        } else {
+            debugPrint("Login failed")
         }
     }
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
         // 检查文本字段内容并更新警告标签的显示状态
         updateWarningLabels(for: textField)
-    }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        // 可以在这里进行输入限制，例如不允许输入特殊字符等
-        // 返回 true 允许输入，返回 false 阻止输入
-        return true
     }
     
     // 更新警告标签的显示状态

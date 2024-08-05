@@ -9,17 +9,17 @@ import Foundation
 
 class LoginViewModel: NSObject {
     
-    var username: String = ""
-    var password: String = ""
+    var user = User(username: "", password: "")
+    
+    @Published var isLoggedIn: Bool = false
     
     override init() {
         super.init()
     }
     
-    func login(username: String, password: String, completion: @escaping (Bool) -> Void) {
-        // 这里模拟网络请求
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            completion(username == "admin" && password == "password")
-        }
+    func login(username: String, password: String) -> Bool {
+        self.user.username = username
+        self.user.password = password
+        return true
     }
 }

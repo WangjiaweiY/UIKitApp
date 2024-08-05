@@ -11,8 +11,7 @@ import UIKit
 
 class AINoiseReductionRootView: UIView {
     
-    
-    var backButtonAction: (() -> Void)?
+    let viewModel: AINoiseReductionViewModel
     
     lazy var backButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -60,7 +59,8 @@ class AINoiseReductionRootView: UIView {
         return button
     }()
 
-    init() {
+    init(viewModel: AINoiseReductionViewModel) {
+        self.viewModel = viewModel
         super.init(frame: .zero)
     }
 
@@ -70,7 +70,7 @@ class AINoiseReductionRootView: UIView {
     
     override func didMoveToWindow() {
         super.didMoveToWindow()
-        setupView()
+        constructViewHierarchy()
         activateConstraints()
         bindInteraction()
     }
@@ -78,7 +78,7 @@ class AINoiseReductionRootView: UIView {
 
 extension AINoiseReductionRootView {
     
-    func setupView() {
+    func constructViewHierarchy() {
         addSubview(textLabel)
         addSubview(micOrStopButton)
         addSubview(playOrPauseButton)
@@ -96,6 +96,35 @@ extension AINoiseReductionRootView {
     }
     
     func activateConstraints() {
+        
+        NSLayoutConstraint.activate([
+            backButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 100),
+            backButton.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
+            backButton.widthAnchor.constraint(equalToConstant: 44),
+            backButton.heightAnchor.constraint(equalToConstant: 44),
+            
+            micOrStopButton.widthAnchor.constraint(equalToConstant: 100),
+            micOrStopButton.heightAnchor.constraint(equalToConstant: 100),
+            micOrStopButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -120),
+            micOrStopButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -80),
+            
+            playOrPauseButton.widthAnchor.constraint(equalToConstant: 100),
+            playOrPauseButton.heightAnchor.constraint(equalToConstant: 100),
+            playOrPauseButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            playOrPauseButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -80),
+            
+            headPhonesButton.widthAnchor.constraint(equalToConstant: 100),
+            headPhonesButton.heightAnchor.constraint(equalToConstant: 100),
+            headPhonesButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 120),
+            headPhonesButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -80),
+            
+            textLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            textLabel.topAnchor.constraint(equalTo: topAnchor, constant: 200),
+            textLabel.widthAnchor.constraint(equalToConstant: 200),
+            textLabel.heightAnchor.constraint(equalToConstant: 80),
+        ])
+        
+        textLabel.translatesAutoresizingMaskIntoConstraints = false
 
     }
     
@@ -143,7 +172,7 @@ extension AINoiseReductionRootView {
 
     @objc
     private func backButtonClick(sender: UIButton) {
-        backButtonAction?()
+
     }
 
     func updateTextLabel(with text: String) {
